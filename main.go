@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
@@ -19,6 +20,9 @@ import (
 type Result struct {
 	URL      string
 	Title    string
+	PortOpen bool
+	// Whether to continue trying HTTP protocol
+	TryHTTP bool
 }
 
 type probeArgs []string
@@ -108,6 +112,11 @@ func main() {
 
 					// skip trying HTTP if --prefer-https is set
 					if preferHTTPS {
+						continue
+					}
+
+					// proceed to the next step only when HTTP is available
+					if !(result.PortOpen && result.TryHTTP) {
 						continue
 					}
 				}
@@ -257,6 +266,16 @@ func isListening(client *http.Client, requrl, method string) *Result {
 	}
 
 	if err != nil {
+		if strings.Contains(err.Error(), "http: server gave HTTP response to HTTPS client") {
+			result.TryHTTP = true
+		}
+		if ue, ok := err.(*url.Error); ok {
+			if ne, ok1 := ue.Err.(*net.OpError); ok1 {
+				if ne.Op == "dial" {
+					result.PortOpen = false
+				}
+			}
+		}
 		return nil
 	}
 
