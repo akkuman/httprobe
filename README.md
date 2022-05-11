@@ -14,16 +14,20 @@ httprobe accepts line-delimited domains on `stdin`:
 
 ```
 ▶ cat recon/example/domains.txt
-example.com
-example.edu
-example.net
+example.com  | [title]
+example.edu  | [title]
+example.net  | [title]
 ▶ cat recon/example/domains.txt | httprobe
-http://example.com
-http://example.net
-http://example.edu
-https://example.com
-https://example.edu
-https://example.net
+http://example.com  | [title]
+http://example.net  | [title]
+http://example.edu  | [title]
+https://example.com | [title]
+https://example.edu | [title]
+https://example.net | [title]
+▶ httprobe -ips "1.1.1.1-3, 2.2.2.2/24, 3.3.3.3"
+http://1.1.1.1  | [title]
+https://1.1.1.1  | [title]
+...
 ```
 
 ## Extra Probes
