@@ -26,36 +26,34 @@ func (p probeArgs) String() string {
 	return strings.Join(p, ",")
 }
 
-func main() {
-
+var (
 	// concurrency flag
-	var concurrency int
-	flag.IntVar(&concurrency, "c", 20, "set the concurrency level (split equally between HTTPS and HTTP requests)")
-
+	concurrency int
 	// probe flags
-	var probes probeArgs
-	flag.Var(&probes, "p", "add additional probe (proto:port)")
-
+	probes probeArgs
 	// skip default probes flag
-	var skipDefault bool
-	flag.BoolVar(&skipDefault, "s", false, "skip the default probes (http:80 and https:443)")
-
+	skipDefault bool
 	// timeout flag
-	var to int
-	flag.IntVar(&to, "t", 10000, "timeout (milliseconds)")
-
+	MsTimeout int
 	// prefer https
-	var preferHTTPS bool
-	flag.BoolVar(&preferHTTPS, "prefer-https", false, "only try plain HTTP if HTTPS fails")
-
+	preferHTTPS bool
 	// HTTP method to use
-	var method string
+	method string
+)
+
+func init() {
+	flag.IntVar(&concurrency, "c", 20, "set the concurrency level (split equally between HTTPS and HTTP requests)")
+	flag.Var(&probes, "p", "add additional probe (proto:port)")
+	flag.BoolVar(&skipDefault, "s", false, "skip the default probes (http:80 and https:443)")
+	flag.IntVar(&MsTimeout, "t", 10000, "timeout (milliseconds)")
+	flag.BoolVar(&preferHTTPS, "prefer-https", false, "only try plain HTTP if HTTPS fails")
 	flag.StringVar(&method, "method", "GET", "HTTP method to use")
-
 	flag.Parse()
+}
 
+func main() {
 	// make an actual time.Duration out of the timeout
-	timeout := time.Duration(to * 1000000)
+	timeout := time.Duration(MsTimeout * 1000000)
 
 	var tr = &http.Transport{
 		MaxIdleConns:      30,
