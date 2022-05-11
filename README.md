@@ -49,10 +49,10 @@ You can set the concurrency level with the `-c` flag:
 
 ## Timeout
 
-You can change the timeout by using the `-t` flag and specifying a timeout in milliseconds:
+You can change the timeout by using the `-t` flag and specifying a timeout in seconds:
 
 ```
-▶ cat domains.txt | httprobe -t 20000
+▶ cat domains.txt | httprobe -t 20
 ```
 
 ## Skipping Default Probes
