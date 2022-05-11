@@ -44,7 +44,7 @@ var (
 	// skip default probes flag
 	skipDefault bool
 	// timeout flag
-	MsTimeout int
+	sTimeout int
 	// prefer https
 	preferHTTPS bool
 	// HTTP method to use
@@ -56,7 +56,7 @@ func init() {
 	flag.IntVar(&concurrency, "c", 20, "set the concurrency level (split equally between HTTPS and HTTP requests)")
 	flag.Var(&probes, "p", "add additional probe (proto:port)")
 	flag.BoolVar(&skipDefault, "s", false, "skip the default probes (http:80 and https:443)")
-	flag.IntVar(&MsTimeout, "t", 10000, "timeout (milliseconds)")
+	flag.IntVar(&sTimeout, "t", 10, "timeout (seconds)")
 	flag.BoolVar(&preferHTTPS, "prefer-https", false, "only try plain HTTP if HTTPS fails")
 	flag.StringVar(&method, "method", "GET", "HTTP method to use")
 	flag.StringVar(&ips, "ips", "", "the ip range of target")
@@ -65,7 +65,7 @@ func init() {
 
 func main() {
 	// make an actual time.Duration out of the timeout
-	timeout := time.Duration(MsTimeout * 1000000)
+	timeout := time.Duration(sTimeout) * time.Second
 
 	var tr = &http.Transport{
 		MaxIdleConns:      30,
